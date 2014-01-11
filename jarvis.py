@@ -53,8 +53,8 @@ pt = ProcessText.ProcessText()
 log_lo = math.log(lo)
 log_hi = math.log(hi)
 
-def say():
-    call
+def say(response):
+    subprocess.call('echo "'+response+'" | /usr/bin/festival --tts', shell=True)
 
 def clean_up():
     ''' Clean up recorded files '''
@@ -200,15 +200,11 @@ def main():
             logging.debug( "Finish flac reencoding " + str(tend - tstart) )
 
             # Send and receive translation
-	    print 'Send_Recv'
             resp = send_recv()
 
             if resp !="":
                 try:
-		    print 'Try'
                     hypotheses = json.loads(resp)['hypotheses']
-	    	    print '----hypotheses: '
-		    print hypotheses
                 except Exception as e:
 		    print e
                     logging.debug( "No response received. Are you beyond a firewall?" )
@@ -216,16 +212,18 @@ def main():
 
                 tend = datetime.now()
                 logging.debug( "Get google response " + str(tend - tstart) )
-
+		retp=False
                 for index in range(len(hypotheses)):
                     values = hypotheses[index].values()
 		    pt.is_grid_running=False
                     retp = pt.process_text(values, si.get_language())
                     if (retp==True):
                         break;
-		if (retp==False):
-		    print 'trying query_wolfram' 
-		    query_wolfram(values)
+		    else:
+		        response = query_wolfram(values)[1]
+		        say(response)
+			if(response[0]):
+			    break;
 		    
 def init_localization():
   	LOCALE_DOMAIN = APP_NAME

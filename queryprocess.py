@@ -13,6 +13,8 @@ def query_wolfram(values):
     print 'In QueryProcess'
     query = ' '.join(str(value) for value in values)
     res = client.query(query)
+    for key,value in res: 
+	print 'res['+key+']='+value
     if len(res.pods) > 0:
         texts = ""
         pod = res.pods[1]
@@ -23,5 +25,7 @@ def query_wolfram(values):
         # to skip ascii character in case of error
         texts = texts.encode('ascii', 'ignore')
         print texts
+	return [True, texts]
     else:
         print "Sorry, I am not sure. Perhaps, rephrase your question?"
+        return [False, "Sorry, I am not sure. Perhaps, rephrase your question?"]
