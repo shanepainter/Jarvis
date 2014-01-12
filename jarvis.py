@@ -206,7 +206,7 @@ def main():
                 try:
                     hypotheses = json.loads(resp)['hypotheses']
                 except Exception as e:
-		    print e
+                    print e
                     logging.debug( "No response received. Are you beyond a firewall?" )
                     continue
 
@@ -215,15 +215,17 @@ def main():
 		retp=False
                 for index in range(len(hypotheses)):
                     values = hypotheses[index].values()
-		    pt.is_grid_running=False
-                    retp = pt.process_text(values, si.get_language())
-                    if (retp==True):
-                        break;
-		    else:
-		        response = query_wolfram(values)[1]
-		        say(response)
-			if(response[0]):
-			    break;
+                    print "Values:"
+                    print values
+                pt.is_grid_running=False
+                retp = pt.process_text(values, si.get_language())
+                if (retp==True):
+                    break;
+                else:
+                    response = query_wolfram(values)[1]
+                    say(response)
+                if(response[0]==True):
+                    break;
 		    
 def init_localization():
   	LOCALE_DOMAIN = APP_NAME
